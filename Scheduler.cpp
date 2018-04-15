@@ -35,6 +35,10 @@
 extern int __heap_start, *__brkval;
 extern char* __malloc_heap_end;
 extern size_t __malloc_margin;
+#elif defined(__AVR_ATmega328P__)
+extern int __heap_start, *__brkval;
+extern char* __malloc_heap_end;
+extern size_t __malloc_margin;
 
 #elif defined(ARDUINO_ARCH_SAM)
 #if !defined(RAMEND)
@@ -98,6 +102,16 @@ bool SchedulerClass::start(func_t taskSetup, func_t taskLoop, size_t stackSize)
 
   // Adjust heap limit
   __malloc_heap_end = (char*) STACKSTART;
+#elif defined(__AVR_ATmega328P__)
+  // Check that the task can be allocated
+  int HEAPEND = (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+  int STACKSTART = ((int) stack) - stackSize;
+  HEAPEND += __malloc_margin;
+  if (STACKSTART < HEAPEND) return (false);
+
+  // Adjust heap limit
+  __malloc_heap_end = (char*) STACKSTART;
+
 #else
   // Check that the task can be allocated
   if (s_top + stackSize > STACK_MAX) return (false);

@@ -124,6 +124,11 @@ protected:
   static const size_t DEFAULT_STACK_SIZE = 128;
   static const size_t DEFAULT_MAIN_STACK_SIZE = 256;
 
+#elif defined(__AVR_ATmega328P__)
+  /** Default stack size. Stack max dynamically checked against heap end. */
+  static const size_t DEFAULT_STACK_SIZE = 128;
+  static const size_t DEFAULT_MAIN_STACK_SIZE = 256;
+
 #elif defined(ARDUINO_ARCH_SAM)
   /** Default stack size and stack max. */
   static const size_t DEFAULT_STACK_SIZE = 1024;
